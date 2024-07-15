@@ -6,7 +6,8 @@ import { OrdersModule } from './orders/orders.module';
 import { CustomersModule } from './customers/customers.module';
 
 @Module({
-  imports: [ProductsModule,
+  imports: [
+    ProductsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env'
