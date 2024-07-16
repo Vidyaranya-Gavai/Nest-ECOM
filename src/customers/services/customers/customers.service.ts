@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { CreateCustomerDto } from 'src/customers/dtos/create-customer.dto';
@@ -6,10 +6,15 @@ import { Customer } from 'src/customers/schemas/customer.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from 'src/customers/dtos/login.dto';
+import { Order } from 'src/orders/schemas/order.schema';
 
 @Injectable()
 export class CustomersService {
-    constructor(@InjectModel(Customer.name) private customerModel: Model<Customer>, private jwtService: JwtService){}
+    constructor(
+        @InjectModel(Customer.name) private customerModel: Model<Customer>,
+        @InjectModel(Order.name) private orderModel: Model<Order>,
+        private jwtService: JwtService
+    ){}
 
     async getAllCustomers() {
         return await this.customerModel.find();
@@ -46,5 +51,18 @@ export class CustomersService {
 
         const token = this.jwtService.sign({id: customer._id, name: customer.name});
         return {token};
+    }
+
+    async deleteCustomer(id: string){
+        if(!mongoose.isValidObjectId(id)) throw new BadRequestException("Provide a valid CustomerId");
+
+        const customer = await this.customerModel.findByIdAndDelete(id);
+        if(!customer) throw new NotFoundException(`Customer Not Found - ID: ${id}`);
+
+        await this.orderModel.deleteMany({orderedBy: customer._id});
+        return {
+            success: true,
+            message: `Customer Deleted Successfully - ID: ${id}`
+        };
     }
 }

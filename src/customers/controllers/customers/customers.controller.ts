@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CreateCustomerDto } from 'src/customers/dtos/create-customer.dto';
 import { LoginDto } from 'src/customers/dtos/login.dto';
 import { CustomersService } from 'src/customers/services/customers/customers.service';
@@ -25,5 +25,10 @@ export class CustomersController {
     @Post('/login')
     async login(@Body() loginDto: LoginDto){
         return await this.customerService.login(loginDto);
+    }
+
+    @Delete('/delete/:id')
+    async deleteCustomer(@Param('id') id: string){
+        return await this.customerService.deleteCustomer(id);
     }
 }
