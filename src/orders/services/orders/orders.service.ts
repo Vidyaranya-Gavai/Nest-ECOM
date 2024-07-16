@@ -15,9 +15,15 @@ export class OrdersService {
     }
 
     async getOrder(id: string){
+        if(!mongoose.isValidObjectId(id)) throw new BadRequestException("Provide a valid OrderId");
+        
         const order = await this.orderModel.findById(id);
         if(!order) throw new NotFoundException(`Order Not Found - ID: ${id}`);
         return order;
+    }
+
+    async getMyOrders(loggedInCustomer){
+        return await this.orderModel.find({orderedBy: loggedInCustomer._id});
     }
 
     async addOrder(createOrderDto: CreateOrderDto, customer){

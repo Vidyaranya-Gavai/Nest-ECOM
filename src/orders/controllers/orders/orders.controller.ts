@@ -12,6 +12,12 @@ export class OrdersController {
         return await this.orderService.getAllOrders();
     }
 
+    @UseGuards(AuthGuard())
+    @Get('/myOrders')
+    async getMyOrders(@Req() req){
+        return await this.orderService.getMyOrders(req.user);
+    }
+
     @Get(':id')
     async getOrder(@Param('id') id: string){
         return await this.orderService.getOrder(id);
