@@ -14,10 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy){
         });
     }
 
-    async validate(payload){
+    async validate(payload: { id: any }){
         const {id} = payload;
 
-        const customer = this.customerModel.findById(id);
+        const customer = await this.customerModel.findById(id);
         if(!customer) throw new UnauthorizedException('Unauthorized Access Detected');
         return customer;
     }

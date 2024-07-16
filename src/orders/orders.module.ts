@@ -5,10 +5,15 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { OrderSchema } from './schemas/order.schema';
 import { ProductSchema } from 'src/products/schemas/product.schema';
 import { CustomersModule } from 'src/customers/customers.module';
+import { CustomerSchema } from 'src/customers/schemas/customer.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: 'Order', schema: OrderSchema}, {name: 'Product', schema: ProductSchema}]),
+    MongooseModule.forFeature([
+      {name: 'Order', schema: OrderSchema},
+      {name: 'Product', schema: ProductSchema},
+      {name: 'Customer', schema: CustomerSchema}
+    ]),
     CustomersModule
   ],
   controllers: [OrdersController],

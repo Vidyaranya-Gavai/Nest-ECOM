@@ -20,7 +20,7 @@ export class OrdersService {
         return order;
     }
 
-    async addOrder(createOrderDto: CreateOrderDto){
+    async addOrder(createOrderDto: CreateOrderDto, customer){
         const newOrder = await this.orderModel.create(createOrderDto);
 
         var orderCost=0;
@@ -35,7 +35,7 @@ export class OrdersService {
             orderCost += item.price*product.quantity;
         }));
         
-        return await this.orderModel.findByIdAndUpdate(newOrder._id, {cost: orderCost}, {
+        return await this.orderModel.findByIdAndUpdate(newOrder._id, {cost: orderCost, orderedBy: customer._id}, {
             new: true
         });
     }
