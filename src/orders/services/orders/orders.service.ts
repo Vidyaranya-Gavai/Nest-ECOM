@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Admin } from 'src/admin/schemas/admin.schema';
+import { Customer } from 'src/customers/schemas/customer.schema';
 import { CreateOrderDto } from 'src/orders/dtos/create-order.dto';
 import { UpdateOrderDto } from 'src/orders/dtos/update-order.dto';
 import { Order } from 'src/orders/schemas/order.schema';
@@ -10,7 +11,8 @@ import { Product } from 'src/products/schemas/product.schema';
 @Injectable()
 export class OrdersService {
     constructor(@InjectModel(Order.name) private orderModel: mongoose.Model<Order>,
-                @InjectModel(Product.name) private productModel: mongoose.Model<Product>){}
+                @InjectModel(Product.name) private productModel: mongoose.Model<Product>,
+                @InjectModel(Customer.name) private customerModel: mongoose.Model<Customer>) {}
 
     async getAllOrders(admin){
         const {username} = admin;
@@ -35,6 +37,18 @@ export class OrdersService {
 
     async getMyOrders(loggedInCustomer){
         return await this.orderModel.find({orderedBy: loggedInCustomer._id});
+    }
+
+    async getOrdersByCustomerId(id: string, admin){
+        const {username} = admin;
+        if(!username) throw new UnauthorizedException("You are not authorized to access this resourse");
+
+        if(!mongoose.isValidObjectId(id)) throw new BadRequestException("Provide a valid CustomerID");
+
+        const customer = await this.customerModel.findById(id);
+        if(!customer) throw new NotFoundException(`Customer Not Found - CustomerID: ${id}`);
+
+        return await this.orderModel.find({orderedBy: customer._id});
     }
 
     async addOrder(createOrderDto: CreateOrderDto, customer){

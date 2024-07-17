@@ -27,6 +27,6 @@ export class JwtStrategy extends PassportStrategy(Strategy){
         const admin = await this.adminModel.findById(id);
         if(admin) return admin;
 
-        throw new UnauthorizedException('Unauthorized Access Detected - CustomerJWT');
+        throw new UnauthorizedException('Unauthorized Access Detected');
     }
 }

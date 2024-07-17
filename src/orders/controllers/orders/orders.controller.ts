@@ -27,6 +27,12 @@ export class OrdersController {
     }
 
     @UseGuards(AuthGuard())
+    @Get('/customerOrders/:id')
+    async getOrdersByCustomerId(@Param('id') id: string, @Req() req){
+        return await this.orderService.getOrdersByCustomerId(id, req.user);
+    }
+
+    @UseGuards(AuthGuard())
     @Post('/add')
     async addOrder(@Body() createOrderDto: CreateOrderDto, @Req() req){
         return this.orderService.addOrder(createOrderDto, req.user);
