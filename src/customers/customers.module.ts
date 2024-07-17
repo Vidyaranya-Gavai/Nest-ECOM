@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { OrderSchema } from 'src/orders/schemas/order.schema';
 import { AdminSchema } from 'src/admin/schemas/admin.schema';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { AdminSchema } from 'src/admin/schemas/admin.schema';
           }
         }
       }
-    })
+    }),
+    AdminModule
   ],
   controllers: [CustomersController],
   providers: [CustomersService, JwtStrategy],

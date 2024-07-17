@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { CreateCustomerDto } from 'src/customers/dtos/create-customer.dto';
@@ -53,7 +53,10 @@ export class CustomersService {
         return {token};
     }
 
-    async deleteCustomer(id: string){
+    async deleteCustomer(id: string, admin){
+        const {username} = admin;
+        if(!username) throw new UnauthorizedException("You are not authorized to access this resourse");
+
         if(!mongoose.isValidObjectId(id)) throw new BadRequestException("Provide a valid CustomerId");
 
         const customer = await this.customerModel.findByIdAndDelete(id);

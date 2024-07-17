@@ -1,6 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AdminLoginDto } from 'src/admin/dtos/admin-login.dto';
-import { CreateAdminDto } from 'src/admin/dtos/create-admin.dto';
 import { AdminService } from 'src/admin/services/admin/admin.service';
 
 @Controller('admin')
