@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
 import { UpdateProductDto } from 'src/products/dtos/update-product.dto';
 import { Product } from 'src/products/schemas/product.schema';
@@ -18,18 +19,21 @@ export class ProductsController {
         return await this.productService.getProductById(id);
     }
 
+    @UseGuards(AuthGuard())
     @Post('/add')
-    async addProduct(@Body() createProductDto: CreateProductDto): Promise<Product>{
-        return await this.productService.addProduct(createProductDto);
+    async addProduct(@Body() createProductDto: CreateProductDto, @Req() req){
+        return await this.productService.addProduct(createProductDto, req.user);
     }
 
+    @UseGuards(AuthGuard())
     @Put('/update/:id')
-    async updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Promise<Product>{
-        return await this.productService.updateProduct(id, updateProductDto);
+    async updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @Req() req){
+        return await this.productService.updateProduct(id, updateProductDto, req.user);
     }
 
+    @UseGuards(AuthGuard())
     @Delete('/delete/:id')
-    async deleteProduct(@Param('id') id: string): Promise<Product>{
-        return await this.productService.deleteProduct(id);
+    async deleteProduct(@Param('id') id: string, @Req() req){
+        return await this.productService.deleteProduct(id, req.user);
     }
 }

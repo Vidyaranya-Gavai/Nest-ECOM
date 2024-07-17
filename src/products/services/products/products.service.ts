@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { CreateProductDto } from 'src/products/dtos/create-product.dto';
@@ -22,11 +22,16 @@ export class ProductsService {
         return product;
     }
 
-    async addProduct(createProductDto: CreateProductDto){
+    async addProduct(createProductDto: CreateProductDto, admin){
+        const {username} = admin;
+        if(!username) throw new UnauthorizedException("You are authorized to add a new product");
         return await this.productModel.create(createProductDto);
     }
 
-    async updateProduct(id: string, updateProductDto: UpdateProductDto){
+    async updateProduct(id: string, updateProductDto: UpdateProductDto, admin){
+        const {username} = admin;
+        if(!username) throw new UnauthorizedException("You are authorized to add a new product");
+
         if(!mongoose.isValidObjectId(id)) throw new BadRequestException('Provide a valid ID');
 
         const product = await this.productModel.findById(id);
@@ -37,7 +42,10 @@ export class ProductsService {
         });
     }
 
-    async deleteProduct(id: string){
+    async deleteProduct(id: string, admin){
+        const {username} = admin;
+        if(!username) throw new UnauthorizedException("You are authorized to add a new product");
+
         if(!mongoose.isValidObjectId(id)) throw new BadRequestException('Provide a valid ID');
 
         const product = await this.productModel.findById(id);
