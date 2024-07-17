@@ -1,21 +1,19 @@
 import { Module } from '@nestjs/common';
-import { CustomersController } from './controllers/customers/customers.controller';
-import { CustomersService } from './services/customers/customers.service';
+import { AdminController } from './controllers/admin/admin.controller';
+import { AdminService } from './services/admin/admin.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CustomerSchema } from './schemas/customer.schema';
+import { AdminSchema } from './schemas/admin.schema';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { JwtStrategy } from './jwt.strategy';
-import { OrderSchema } from 'src/orders/schemas/order.schema';
-import { AdminSchema } from 'src/admin/schemas/admin.schema';
+import { AdminJwtStrategy } from './admin-jwt.strategy';
+import { CustomerSchema } from 'src/customers/schemas/customer.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      {name: 'Customer', schema: CustomerSchema},
-      {name: 'Order', schema: OrderSchema},
-      {name: 'Admin', schema: AdminSchema}
+      {name: 'Admin', schema: AdminSchema},
+      {name: 'Customer', schema: CustomerSchema}
     ]),
     PassportModule.register({defaultStrategy: 'jwt'}),
     JwtModule.registerAsync({
@@ -30,8 +28,8 @@ import { AdminSchema } from 'src/admin/schemas/admin.schema';
       }
     })
   ],
-  controllers: [CustomersController],
-  providers: [CustomersService, JwtStrategy],
-  exports: [JwtStrategy, PassportModule]
+  controllers: [AdminController],
+  providers: [AdminService, AdminJwtStrategy],
+  exports: [AdminJwtStrategy, PassportModule]
 })
-export class CustomersModule {}
+export class AdminModule {}

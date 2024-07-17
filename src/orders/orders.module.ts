@@ -6,6 +6,7 @@ import { OrderSchema } from './schemas/order.schema';
 import { ProductSchema } from 'src/products/schemas/product.schema';
 import { CustomersModule } from 'src/customers/customers.module';
 import { CustomerSchema } from 'src/customers/schemas/customer.schema';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { CustomerSchema } from 'src/customers/schemas/customer.schema';
       {name: 'Product', schema: ProductSchema},
       {name: 'Customer', schema: CustomerSchema}
     ]),
-    CustomersModule
+    CustomersModule || AdminModule  
   ],
   controllers: [OrdersController],
   providers: [OrdersService]

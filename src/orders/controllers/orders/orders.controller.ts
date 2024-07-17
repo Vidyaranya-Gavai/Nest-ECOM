@@ -8,9 +8,10 @@ import { OrdersService } from 'src/orders/services/orders/orders.service';
 export class OrdersController {
     constructor(private orderService: OrdersService){}
 
+    @UseGuards(AuthGuard())
     @Get('')
-    async getAllOrders(){
-        return await this.orderService.getAllOrders();
+    async getAllOrders(@Req() req){
+        return await this.orderService.getAllOrders(req.user);
     }
 
     @UseGuards(AuthGuard())
@@ -19,9 +20,10 @@ export class OrdersController {
         return await this.orderService.getMyOrders(req.user);
     }
 
+    @UseGuards(AuthGuard())
     @Get(':id')
-    async getOrder(@Param('id') id: string){
-        return await this.orderService.getOrder(id);
+    async getOrder(@Param('id') id: string, @Req() req){
+        return await this.orderService.getOrder(id, req.user);
     }
 
     @UseGuards(AuthGuard())
